@@ -47,14 +47,14 @@ public class CashRegister extends DbConnector {
 	/**
 	 * Create the application.
 	 */
-	public CashRegister() {
-		initialize();
+	public CashRegister(boolean access) {
+		initialize(access);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(boolean access) {
 		
 		super.setUpDB(); //Necessary call
 		
@@ -176,7 +176,7 @@ public class CashRegister extends DbConnector {
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Hub().getFrame().setVisible(true);
+				new Hub(access).getFrame().setVisible(true);
 				getFrame().dispose();
 				
 			}

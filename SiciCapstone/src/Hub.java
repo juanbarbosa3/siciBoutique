@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -30,14 +32,14 @@ public class Hub {
 	/**
 	 * Create the application.
 	 */
-	public Hub() {
-		initialize();
+	public Hub(boolean access) {
+		initialize(access);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(boolean access) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 345, 380);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,26 +84,23 @@ public class Hub {
 		});
 
 		btnLogOut.setBounds(113, 175, 60, 58);
-		//btnNewButton.setBounds(122, 18041, 42126, 104, 77);
 		
 		Image imgLogOut = picLogOut.getScaledInstance(btnLogOut.getWidth(), btnLogOut.getHeight(), Image.SCALE_SMOOTH);
 		btnLogOut.setIcon(new ImageIcon (imgLogOut));
 		
 		bottomPanel.add(btnLogOut);
-		///////////////////////////////////////////
 
-		
-		
 		JButton btnCash = new JButton("CashRegister");
 		btnCash.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CashRegister cr = new CashRegister();
+				CashRegister cr = new CashRegister(access); //Necessary access pass
 				cr.getFrame().setVisible(true);
 				getFrame().dispose();
 			}
 		});
 		btnCash.setBounds(90, 78, 115, 30);
 		bottomPanel.add(btnCash);
+		
 		
 		JButton btnUsers = new JButton("AddUsers");
 		btnUsers.addActionListener(new ActionListener() {
@@ -114,6 +113,7 @@ public class Hub {
 		btnUsers.setBounds(90, 134, 115, 30);
 		bottomPanel.add(btnUsers);
 		
+		
 		JButton btnInventory = new JButton("Inventory");
 		btnInventory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -124,6 +124,10 @@ public class Hub {
 		btnInventory.setBounds(90, 21, 115, 30);
 		bottomPanel.add(btnInventory);
 		
-		
+		//Block of code that disables access
+		if(!access) { 	
+			btnUsers.setEnabled(false);
+			btnInventory.setEnabled(false);
+		}
 	}
 }

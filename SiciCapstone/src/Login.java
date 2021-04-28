@@ -148,10 +148,23 @@ public class Login extends DbConnector{
 						Statement s = getConnection().createStatement();
 						ResultSet r = s.executeQuery(query);
 					
-						if(r.next()) {
-							new Hub().getFrame().setVisible(true);
-							getConnection().close();
-							getFrame().dispose();
+						if(r.next()) { //Block of code that take cares of the user's access
+							
+							String role = r.getString("staff_role");
+							
+							switch(role) {
+							case "Manager":
+								new Hub(true).getFrame().setVisible(true);
+								getConnection().close();
+								getFrame().dispose();
+								break;
+							case "Sales":
+								new Hub(false).getFrame().setVisible(true);
+								getConnection().close();
+								getFrame().dispose();
+								break;
+							}
+							
 						} else {
 							Notification.failedLogIn(getFrame(), txtPassword, txtUser);
 						}
