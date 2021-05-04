@@ -1,10 +1,12 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -71,14 +73,14 @@ public class ProductInformation {
 	/**
 	 * Create the application.
 	 */
-	public ProductInformation(String name, String brand, String color, String size, String price, int available) {
-		initialize(name, brand, color, size, price, available);
+	public ProductInformation(JTable table, String name, String brand, String color, String size, String price, int available) {
+		initialize(table, name, brand, color, size, price, available);
 	}
 	
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(String name, String brand, String color, String size, String price, int available) {
+	private void initialize(JTable table, String name, String brand, String color, String size, String price, int available) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 402);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //CLOSES THIS FORM
@@ -193,7 +195,8 @@ public class ProductInformation {
 				String input = txtInput.getText();
 				
 				if(!input.matches("-?\\d+")){ //regex to check if its integer
-					Notification.notNumber(getFrame(), txtInput);
+					Notification.notNumber(getFrame());
+					txtInput.setText("");
 					
 				}else { //else its a number
 					
@@ -203,11 +206,16 @@ public class ProductInformation {
 						setPrice(price);
 						setQuantity(Integer.parseInt(input));
 						setReadyToAdd(true);						
-						Notification.updatedCart(getFrame(), txtInput);
+						Notification.succesfulUpdate(getFrame());
+						
+						DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+						tableModel.addRow(new Object[]{getName(), getQuantity(), getPrice()});
+						
 						getFrame().dispose();
 						
 					} else {//number > available
-						Notification.failedQuantity(getFrame(), txtInput);
+						Notification.failedQuantity(getFrame());
+						txtInput.setText("");
 					}
 					
 				}

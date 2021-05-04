@@ -323,8 +323,8 @@ public class OldCashRegister extends DbConnector{
 						String price = r.getString("list_price");
 						int available = r.getInt("available");
 						
-						ProductInformation pi = new ProductInformation(name, brand, color, size, price, available);
-						pi.getFrame().setVisible(true);
+					//	ProductInformation pi = new ProductInformation(name, brand, color, size, price, available);
+					//	pi.getFrame().setVisible(true);
 						
 							
 //							Object tableData[] = {r.getString("inventory_name")};

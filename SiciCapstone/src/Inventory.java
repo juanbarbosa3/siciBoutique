@@ -52,7 +52,7 @@ public class Inventory extends DbConnector{
 		super.setUpDB(); //Necessary call
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 705, 485);
+		frame.setBounds(100, 100, 1009, 502);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Para acomodar
@@ -75,7 +75,7 @@ public class Inventory extends DbConnector{
 			new Object[][] {
 			},
 			new String[] {
-				"Name", "Brand", "Category", "Color", "Date", "Size", "Price", "Sku", "Row Status",
+				"Name", "Brand", "Category", "Color", "Size", "Price", "Sku", "Available",
 			}
 		));
 		table.setBackground(Color.WHITE);
@@ -84,12 +84,12 @@ public class Inventory extends DbConnector{
 		table.setDefaultEditor(Object.class, null); //non editable table
 		
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(10, 81, 245, 354);
+		scrollPane.setBounds(10, 81, 681, 354);
 		frame.getContentPane().add(scrollPane);
 		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(null);
-		bottomPanel.setBounds(265, 81, 414, 322);
+		bottomPanel.setBounds(701, 81, 282, 322);
 		frame.getContentPane().add(bottomPanel);
 		
 		JLabel lblName = new JLabel("Name:");
@@ -102,103 +102,103 @@ public class Inventory extends DbConnector{
 		lblBrand.setBounds(10, 45, 101, 23);
 		bottomPanel.add(lblBrand);
 		
+		JLabel lblCategory = new JLabel("Category:");
+		lblCategory.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblCategory.setBounds(10, 79, 101, 23);
+		bottomPanel.add(lblCategory);
+		
 		JLabel lblColor = new JLabel("Color:");
 		lblColor.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblColor.setBounds(10, 79, 101, 23);
+		lblColor.setBounds(10, 113, 101, 23);
 		bottomPanel.add(lblColor);
 		
 		JLabel lblSize = new JLabel("Size:");
 		lblSize.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblSize.setBounds(10, 113, 101, 23);
+		lblSize.setBounds(10, 147, 101, 23);
 		bottomPanel.add(lblSize);
-		
-		JLabel lblPrice = new JLabel("Price:");
-		lblPrice.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblPrice.setBounds(10, 147, 101, 23);
-		bottomPanel.add(lblPrice);
 		
 		JLabel lblNameInfo = new JLabel("<dynamic>");
 		lblNameInfo.setOpaque(true);
 		lblNameInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		lblNameInfo.setBackground(new Color(245, 255, 250));
-		lblNameInfo.setBounds(121, 11, 283, 23);
+		lblNameInfo.setBounds(121, 11, 142, 23);
 		bottomPanel.add(lblNameInfo);
 		
 		JLabel lblBrandInfo = new JLabel("<dynamic>");
 		lblBrandInfo.setOpaque(true);
 		lblBrandInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		lblBrandInfo.setBackground(new Color(245, 255, 250));
-		lblBrandInfo.setBounds(121, 45, 283, 23);
+		lblBrandInfo.setBounds(121, 45, 142, 23);
 		bottomPanel.add(lblBrandInfo);
+		
+		JLabel lblCategoryInfo = new JLabel("<dynamic>");
+		lblCategoryInfo.setOpaque(true);
+		lblCategoryInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblCategoryInfo.setBackground(new Color(245, 255, 250));
+		lblCategoryInfo.setBounds(121, 79, 142, 23);
+		bottomPanel.add(lblCategoryInfo);
 		
 		JLabel lblColorInfo = new JLabel("<dynamic>");
 		lblColorInfo.setOpaque(true);
 		lblColorInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		lblColorInfo.setBackground(new Color(245, 255, 250));
-		lblColorInfo.setBounds(121, 79, 283, 23);
+		lblColorInfo.setBounds(121, 113, 142, 23);
 		bottomPanel.add(lblColorInfo);
 		
 		JLabel lblSizeInfo = new JLabel("<dynamic>");
 		lblSizeInfo.setOpaque(true);
 		lblSizeInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		lblSizeInfo.setBackground(new Color(245, 255, 250));
-		lblSizeInfo.setBounds(121, 113, 283, 23);
+		lblSizeInfo.setBounds(121, 147, 142, 23);
 		bottomPanel.add(lblSizeInfo);
+		
+		JLabel lblPrice = new JLabel("Price:");
+		lblPrice.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblPrice.setBounds(10, 181, 101, 23);
+		bottomPanel.add(lblPrice);
 		
 		JLabel lblPriceInfo = new JLabel("<dynamic>");
 		lblPriceInfo.setOpaque(true);
 		lblPriceInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		lblPriceInfo.setBackground(new Color(245, 255, 250));
-		lblPriceInfo.setBounds(121, 147, 283, 23);
+		lblPriceInfo.setBounds(121, 181, 142, 23);
 		bottomPanel.add(lblPriceInfo);
 		
-		JLabel lblBrand_1 = new JLabel("Brand:");
-		lblBrand_1.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblBrand_1.setBounds(10, 181, 101, 23);
-		bottomPanel.add(lblBrand_1);
+		JLabel lblSku = new JLabel("Sku:");
+		lblSku.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblSku.setBounds(10, 215, 101, 23);
+		bottomPanel.add(lblSku);
 		
-		JLabel lblBrandInfo_1 = new JLabel("<dynamic>");
-		lblBrandInfo_1.setOpaque(true);
-		lblBrandInfo_1.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblBrandInfo_1.setBackground(new Color(245, 255, 250));
-		lblBrandInfo_1.setBounds(121, 181, 283, 23);
-		bottomPanel.add(lblBrandInfo_1);
+		JLabel lblSkuInfo = new JLabel("<dynamic>");
+		lblSkuInfo.setOpaque(true);
+		lblSkuInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblSkuInfo.setBackground(new Color(245, 255, 250));
+		lblSkuInfo.setBounds(121, 215, 142, 23);
+		bottomPanel.add(lblSkuInfo);
 		
-		JLabel lblColor_1 = new JLabel("Color:");
-		lblColor_1.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblColor_1.setBounds(10, 215, 101, 23);
-		bottomPanel.add(lblColor_1);
+		JLabel lblAvailable = new JLabel("Available Amount:");
+		lblAvailable.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblAvailable.setBounds(10, 249, 101, 23);
+		bottomPanel.add(lblAvailable);
 		
-		JLabel lblColorInfo_1 = new JLabel("<dynamic>");
-		lblColorInfo_1.setOpaque(true);
-		lblColorInfo_1.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblColorInfo_1.setBackground(new Color(245, 255, 250));
-		lblColorInfo_1.setBounds(121, 215, 283, 23);
-		bottomPanel.add(lblColorInfo_1);
+		JLabel lblAvailableInfo = new JLabel("<dynamic>");
+		lblAvailableInfo.setOpaque(true);
+		lblAvailableInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblAvailableInfo.setBackground(new Color(245, 255, 250));
+		lblAvailableInfo.setBounds(121, 249, 142, 23);
+		bottomPanel.add(lblAvailableInfo);
 		
-		JLabel lblSize_1 = new JLabel("Size:");
-		lblSize_1.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblSize_1.setBounds(10, 249, 101, 23);
-		bottomPanel.add(lblSize_1);
+		JLabel lblRow = new JLabel("Row Status:");
+		lblRow.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblRow.setBounds(10, 283, 101, 23);
+		bottomPanel.add(lblRow);
 		
-		JLabel lblSizeInfo_1 = new JLabel("<dynamic>");
-		lblSizeInfo_1.setOpaque(true);
-		lblSizeInfo_1.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblSizeInfo_1.setBackground(new Color(245, 255, 250));
-		lblSizeInfo_1.setBounds(121, 249, 283, 23);
-		bottomPanel.add(lblSizeInfo_1);
-		
-		JLabel lblPrice_1 = new JLabel("Price:");
-		lblPrice_1.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblPrice_1.setBounds(10, 283, 101, 23);
-		bottomPanel.add(lblPrice_1);
-		
-		JLabel lblPriceInfo_1 = new JLabel("<dynamic>");
-		lblPriceInfo_1.setOpaque(true);
-		lblPriceInfo_1.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblPriceInfo_1.setBackground(new Color(245, 255, 250));
-		lblPriceInfo_1.setBounds(121, 283, 283, 23);
-		bottomPanel.add(lblPriceInfo_1);
+		JLabel lblRowInfo = new JLabel("<dynamic>");
+		lblRowInfo.setOpaque(true);
+		lblRowInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblRowInfo.setBackground(new Color(245, 255, 250));
+		lblRowInfo.setBounds(121, 283, 142, 23);
+		bottomPanel.add(lblRowInfo);
 		
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
@@ -227,25 +227,19 @@ public class Inventory extends DbConnector{
 			Statement s = getConnection().createStatement();
 			ResultSet r = s.executeQuery(query);
 			
-//			DefaultTableModel dTable = (DefaultTableModel) table.getModel();
 			while(r.next()) {
 				String name = r.getString("inventory_name");
 				String brand = r.getString("brand");
-				String category = r.getString("category");
+				String category = r.getString("inventory_category");
 				String color = r.getString("color");
-				String date = r.getString("date_added");
 				String size = r.getString("inventory_size");
 				String price = r.getString("list_price");
 				String sku = r.getString("sku");
-				String rowStatus = r.getString("row_status");
-				
+				String available = r.getString("available_amount");			
 
+			
 				DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-				
-				//String tableData[] = {inventory_name, brand, color, inventory_size};
-
-				tableModel.addRow(new String[]{name, brand, category, color, date, size, price, sku, rowStatus});
-				//tableModel.addRow(tableData);
+				tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available});
 			}
 			
 		

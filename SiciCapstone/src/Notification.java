@@ -11,14 +11,11 @@ public final class Notification {
 	
     private Notification() {} //Don't let anyone instantiate this class.
     
-    public static void failedLogIn(JFrame frame, JPasswordField txtPassword, JTextField txtUser) {
+    public static void failedLogIn(JFrame frame) {
 		JOptionPane.showMessageDialog(frame,
 			    "Incorrect username or password!!!",
 			    "Error 404",
 			    JOptionPane.ERROR_MESSAGE);
-		System.out.println("try again");
-		txtUser.setText("");
-		txtPassword.setText("");
     }
     
     public static void itemNotFound(JFrame frame) {
@@ -28,25 +25,29 @@ public final class Notification {
 			    JOptionPane.ERROR_MESSAGE);
     }
     
-    public static void failedQuantity(JFrame frame, JTextField txtInput) {
+    public static void alreadyOnCart(JFrame frame) {
+		JOptionPane.showMessageDialog(frame,
+			    "Item already on cart",
+			    "Error 404",
+			    JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public static void failedQuantity(JFrame frame) {
 		JOptionPane.showMessageDialog(frame,
 			    "cantidad mayor de lo que hay disponible",
 			    "Error 404",
 			    JOptionPane.ERROR_MESSAGE);
-		txtInput.setText("");
     }
     
-    public static void notNumber(JFrame frame, JTextField txtInput) {
+    public static void notNumber(JFrame frame) {
 		JOptionPane.showMessageDialog(frame,
 			    "Please enter number!!!",
 			    "Error 404",
 			    JOptionPane.ERROR_MESSAGE);
-		txtInput.setText("");
     }
     
-    public static void updatedCart(JFrame frame, JTextField txtInput) {
+    public static void succesfulUpdate(JFrame frame) {
 		JOptionPane.showMessageDialog(frame,
 			    "Succesful update!!!");
-		txtInput.setText("");
     }
 }

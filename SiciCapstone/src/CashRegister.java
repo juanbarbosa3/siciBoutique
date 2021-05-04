@@ -35,12 +35,23 @@ public class CashRegister extends DbConnector {
 	private JTable table;
 	private JTextField txtInput;
 	
+	private boolean ready;
+	
 	public JTable getTable() {
 		return table;
 	}
 	
 	public JFrame getFrame() {
 		return frame;
+	}
+	
+	public boolean readyToAdd(String s, JTable table) {
+		for (int i = 0; i < table.getRowCount(); i++) {
+			if(table.getValueAt(i, 0).equals(s)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 
@@ -112,41 +123,40 @@ public class CashRegister extends DbConnector {
 		lblSearch.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
 		
 		JButton btnSearch = new JButton();
+		
+		ready = true;
+		
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sku = txtInput.getText();
 				
-				String query = "select stock_tb.stock_id, inventory_tb.sku, inventory_tb.inventory_name, inventory_tb.brand, inventory_tb.color, inventory_tb.inventory_size, inventory_tb.list_price, stock_tb.available\r\n" + 
-						"from inventory_tb, stock_tb\r\n" + 
+				String query = "select inventory_name, brand, color, inventory_size, list_price, available_amount\r\n" + 
+						"from public.inventory_tb\r\n" + 
 						"where (\r\n" + 
-						"	inventory_tb.sku = '" + sku + "'\r\n" + 
-						"	   and stock_tb.available > 0\r\n" + 
-						"	   and inventory_tb.inventory_id = stock_tb.inventory_id\r\n" + 
+						"	sku = '" + sku + "'\r\n" + 
+						"	   and available_amount > 0\r\n" + 
 						"	  );";
-
+				
 				try {
 					Statement s = getConnection().createStatement();
 					ResultSet r = s.executeQuery(query);
-					
-					//listModel.contains(r.getString("inventory_name"))
 				
 					if(r.next()) {
+						
+						if(readyToAdd(r.getString("inventory_name"), table)) {
 						
 						String name = r.getString("inventory_name");
 						String brand = r.getString("brand");
 						String color = r.getString("color");
 						String size = r.getString("inventory_size");
 						String price = r.getString("list_price");
-						int available = r.getInt("available");
+						int available = r.getInt("available_amount");
 						
-						ProductInformation pi = new ProductInformation(name, brand, color, size, price, available);
+						ProductInformation pi = new ProductInformation(table, name, brand, color, size, price, available);
 						pi.getFrame().setVisible(true);
-
-						if(pi.isReadyToAdd()) {
-
-							DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-							tableModel.addRow(new Object[]{pi.getName(), pi.getQuantity(), pi.getPrice()});
-
+						
+						} else {
+								Notification.alreadyOnCart(frame);
 						}
 
 					} else {
@@ -195,4 +205,5 @@ public class CashRegister extends DbConnector {
 		btnBack.setIcon(new ImageIcon (imgBack));
 		
 	}
+	
 }

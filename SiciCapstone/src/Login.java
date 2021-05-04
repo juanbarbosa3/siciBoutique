@@ -133,8 +133,10 @@ public class Login extends DbConnector{
 				String u = txtUser.getText();
 				String p = txtPassword.getText();
 
-				if(!u.matches("-?\\d+") || p.equals("")) { //regexto check if its integer
-					Notification.failedLogIn(getFrame(), txtPassword, txtUser);
+				if(!u.matches("-?\\d+") || p.equals("")) { //regex to check if its integer
+					Notification.failedLogIn(getFrame());
+					txtUser.setText("");
+					txtPassword.setText("");
 				}else {
 					
 					
@@ -143,8 +145,6 @@ public class Login extends DbConnector{
 					
 					try {
 
-						
-						//Statement s = this.super.getConnection().createStatement();
 						Statement s = getConnection().createStatement();
 						ResultSet r = s.executeQuery(query);
 					
@@ -158,7 +158,7 @@ public class Login extends DbConnector{
 								getConnection().close();
 								getFrame().dispose();
 								break;
-							case "Sales":
+							case "Cashier":
 								new Hub(false).getFrame().setVisible(true);
 								getConnection().close();
 								getFrame().dispose();
@@ -166,7 +166,9 @@ public class Login extends DbConnector{
 							}
 							
 						} else {
-							Notification.failedLogIn(getFrame(), txtPassword, txtUser);
+							Notification.failedLogIn(getFrame());
+							txtUser.setText("");
+							txtPassword.setText("");
 						}
 					
 					}catch (SQLException er) {

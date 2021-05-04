@@ -29,7 +29,6 @@ public class AddUser extends DbConnector{
 	private JFrame frame;
 	private JTextField txtName;
 	private JTextField txtLastName;
-	private JTextField txtEmail;
 	private JTextField txtPassword;
 	private JTextField txtPhone;
 
@@ -88,24 +87,19 @@ public class AddUser extends DbConnector{
 		lblLastName.setBounds(10, 45, 101, 23);
 		bottomPanel.add(lblLastName);
 		
-		JLabel lblEmail = new JLabel("Email:");
-		lblEmail.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblEmail.setBounds(10, 79, 101, 23);
-		bottomPanel.add(lblEmail);
-		
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblPassword.setBounds(10, 113, 101, 23);
+		lblPassword.setBounds(10, 80, 101, 23);
 		bottomPanel.add(lblPassword);
 		
 		JLabel lblPhone = new JLabel("Phone Number:");
 		lblPhone.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblPhone.setBounds(10, 147, 142, 23);
+		lblPhone.setBounds(10, 114, 142, 23);
 		bottomPanel.add(lblPhone);
 		
 		JLabel lblRole = new JLabel("Role:");
 		lblRole.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
-		lblRole.setBounds(10, 181, 101, 23);
+		lblRole.setBounds(10, 148, 101, 23);
 		bottomPanel.add(lblRole);
 		
 		txtName = new JTextField();
@@ -120,28 +114,21 @@ public class AddUser extends DbConnector{
 		txtLastName.setBounds(184, 45, 220, 23);
 		bottomPanel.add(txtLastName);
 		
-		txtEmail = new JTextField();
-		txtEmail.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		txtEmail.setColumns(10);
-		txtEmail.setBounds(184, 79, 220, 23);
-		bottomPanel.add(txtEmail);
-		
 		txtPassword = new JTextField();
 		txtPassword.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		txtPassword.setColumns(10);
-		txtPassword.setBounds(184, 113, 220, 23);
+		txtPassword.setBounds(184, 80, 220, 23);
 		bottomPanel.add(txtPassword);
 		
 		txtPhone = new JTextField();
 		txtPhone.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
 		txtPhone.setColumns(10);
-		txtPhone.setBounds(184, 147, 220, 23);
+		txtPhone.setBounds(184, 114, 220, 23);
 		bottomPanel.add(txtPhone);
 		
 		JPanel rolePanel = new JPanel();
-		rolePanel.setBounds(91, 181, 112, 79);
+		rolePanel.setBounds(90, 148, 108, 79);
 		bottomPanel.add(rolePanel);
-		//rolePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		rolePanel.setLayout(null);
 		
@@ -154,7 +141,7 @@ public class AddUser extends DbConnector{
 		rolePanel.add(rdbSales);
 		
 		JButton btnAdd = new JButton("Add User");
-		btnAdd.setBounds(285, 210, 89, 23);
+		btnAdd.setBounds(262, 151, 142, 109);
 		bottomPanel.add(btnAdd);
 		
 		ButtonGroup g = new ButtonGroup();
@@ -164,6 +151,7 @@ public class AddUser extends DbConnector{
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Notification.succesfulUpdate(getFrame());
 				new Hub(true).getFrame().setVisible(true); //Already manager if you are at this window
 				getFrame().dispose();
 				
@@ -182,25 +170,6 @@ public class AddUser extends DbConnector{
 		Image imgBack = picBack.getScaledInstance(btnBack.getWidth(), btnBack.getHeight(), Image.SCALE_SMOOTH);
 		btnBack.setIcon(new ImageIcon (imgBack));
 		
-		////////////////////////////////////////////////////////
-		//Makes radio buttons cancel each other
-//		rdbSales.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				if(rdbSales.isSelected()) {
-//					rdbManager.setSelected(false);
-//				}
-//			}
-//		});
-//		
-//		rdbManager.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				if(rdbManager.isSelected()) {
-//					rdbSales.setSelected(false);
-//				}
-//			}
-//		});
-		//////////////////////////////////////////////////////////
-		
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -209,33 +178,24 @@ public class AddUser extends DbConnector{
 				if(rdbManager.isSelected()) {
 					role = "Manager";
 				} else {
-					role = "Sales";
+					role = "Cashier";
 				}
 				
 				String password = txtPassword.getText(); 
 				String name = txtName.getText();
 				String lastName = txtLastName.getText();
-				String email = txtEmail.getText();
 				String phone = txtPhone.getText();
 				
-				System.out.println("role:" + role);
-				System.out.println("pass: " + password);
-				System.out.println("nam: " + name);
-				System.out.println("last: " + lastName);
-				System.out.println("email: " + email);
-				System.out.println("phone: " + phone);
-				
 				String query = "BEGIN;\r\n" + 
-						"INSERT INTO staff_tb (store_id, staff_role, staff_password, firstname, lastname, email, phone, row_status)\r\n" + 
-						"VALUES (1, '"+role+"', '"+password+"', '"+name+"', '"+lastName+"', '"+email+"', '"+phone+"', 1);\r\n" +  
+						"INSERT INTO staff_tb (staff_role, staff_password, staff_name, staff_phone, row_status)\r\n" + 
+						"VALUES ('"+role+"', '"+password+"', '"+name+ " " +lastName+"', '"+phone+"', 1);\r\n" +  
 						"END;"; 
-				
-				System.out.println(query);
 					
 				try {
 
 					Statement s = getConnection().createStatement();
 					s.executeUpdate(query);
+					Notification.succesfulUpdate(frame);
 				
 				}catch (SQLException er) {
 					er.printStackTrace();
