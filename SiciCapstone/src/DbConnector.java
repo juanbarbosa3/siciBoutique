@@ -23,7 +23,7 @@ public abstract class DbConnector {
 	public void setUpDB() {
 		this.url = "jdbc:postgresql://localhost:5432/QuickieBoutique"; //replace w/ jdbc:postgresql://host:port/database name
 		this.uname = "postgres"; //replace w/ custom username
-		this.password = "admin"; //replace w/ custom password 
+		this.password = "< add your postgress password and remove the <>'s >"; //replace w/ custom password 
 		
 		try {
 			Class.forName("org.postgresql.Driver");
