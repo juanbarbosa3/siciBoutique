@@ -21,9 +21,9 @@ public abstract class DbConnector {
 	//Each class that extends the connector, must call this method
 	//JGBT
 	public void setUpDB() {
-		this.url = "jdbc:postgresql://localhost:5432/QuickieBoutique"; //replace w/ jdbc:postgresql://host:port/database name
+		this.url = "jdbc:postgresql://localhost:5432/Boutique"; //replace w/ jdbc:postgresql://host:port/database name
 		this.uname = "postgres"; //replace w/ custom username
-		this.password = "9167354P"; //replace w/ custom password 
+		this.password = "replace w/ custom password"; //replace w/ custom password 
 		
 		try {
 			Class.forName("org.postgresql.Driver");
