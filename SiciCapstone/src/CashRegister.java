@@ -12,11 +12,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.JTextField;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -83,11 +86,13 @@ public class CashRegister extends DbConnector {
 			new Object[][] {
 			},
 			new String[] {
-				"Name", "Quantity", "Price"
+				"Sku", "Name", "Quantity", "Price"
 			}
 		));
 		table.setBackground(Color.WHITE);
 		table.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		
+		table.setDefaultEditor(Object.class, null); //non editable table
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		
@@ -143,7 +148,7 @@ public class CashRegister extends DbConnector {
 				
 					if(r.next()) {
 						
-						if(readyToAdd(r.getString("inventory_name"), table)) {
+						if(readyToAdd(sku, table)) {
 						
 						String name = r.getString("inventory_name");
 						String brand = r.getString("brand");
@@ -152,7 +157,7 @@ public class CashRegister extends DbConnector {
 						String price = r.getString("list_price");
 						int available = r.getInt("available_amount");
 						
-						ProductInformation pi = new ProductInformation(table, name, brand, color, size, price, available);
+						ProductInformation pi = new ProductInformation(table, sku, name, brand, color, size, price, available);
 						pi.getFrame().setVisible(true);
 						
 						} else {
@@ -183,6 +188,75 @@ public class CashRegister extends DbConnector {
 		Image imgSearch = picSearch.getScaledInstance(btnSearch.getWidth(), btnSearch.getHeight(), Image.SCALE_SMOOTH);
 		btnSearch.setIcon(new ImageIcon (imgSearch));
 		
+		JButton btnEliminate = new JButton("Eliminar artículo"); //Button to eliminate item from cart
+		btnEliminate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(table.getSelectedRow() != -1) {
+					DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+					tableModel.removeRow(table.getSelectedRow());
+					//table.remove(table.getSelectedRow());
+				}
+				
+			}
+		});
+		btnEliminate.setBounds(60, 116, 133, 64);
+		inputPanel.add(btnEliminate);
+		
+		JButton btnQuantity = new JButton("Cambiar cantidad");
+		btnQuantity.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(table.getSelectedRow() != -1) {
+					
+					DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+					
+					Icon icon = null;
+					String quantity = (String)JOptionPane.showInputDialog(
+		                    frame,
+		                    "Enter desired quantity:",
+		                    "Edit Quantity",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    icon,
+		                    null,
+		                    "");
+					
+					if(quantity != null && quantity.matches("-?\\d+")) {
+					
+						String query = "select available_amount\r\n" + 
+								"from public.inventory_tb\r\n" + 
+								"where (\r\n" + 
+								"	sku = '" + tableModel.getValueAt(table.getSelectedRow(), 0) + "'\r\n" + 
+								"	  );";
+						
+						try {
+							Statement s = getConnection().createStatement();
+							ResultSet r = s.executeQuery(query);
+							r.next();
+							
+							int available = r.getInt("available_amount");
+							
+							if(Integer.parseInt(quantity) <= available) {
+						
+								tableModel.insertRow(table.getSelectedRow(), new Object[]{tableModel.getValueAt(table.getSelectedRow(), 0), tableModel.getValueAt(table.getSelectedRow(), 1), quantity, tableModel.getValueAt(table.getSelectedRow(), 3)});
+								tableModel.removeRow(table.getSelectedRow()+1);
+							} else {
+								Notification.failedQuantity(getFrame());
+							}
+							
+						}catch (SQLException sq) {
+							sq.printStackTrace();
+						}
+					} else {
+						Notification.notNumber(getFrame());
+					}
+				}
+			}
+		});
+		btnQuantity.setBounds(60, 226, 133, 64);
+		inputPanel.add(btnQuantity);
+		
+		
+		
+		
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -204,6 +278,10 @@ public class CashRegister extends DbConnector {
 		Image imgBack = picBack.getScaledInstance(btnBack.getWidth(), btnBack.getHeight(), Image.SCALE_SMOOTH);
 		btnBack.setIcon(new ImageIcon (imgBack));
 		
+		
+		
+		
+		
+		
 	}
-	
 }

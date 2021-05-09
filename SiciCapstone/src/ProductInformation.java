@@ -73,14 +73,14 @@ public class ProductInformation {
 	/**
 	 * Create the application.
 	 */
-	public ProductInformation(JTable table, String name, String brand, String color, String size, String price, int available) {
-		initialize(table, name, brand, color, size, price, available);
+	public ProductInformation(JTable table, String sku, String name, String brand, String color, String size, String price, int available) {
+		initialize(table, sku, name, brand, color, size, price, available);
 	}
 	
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(JTable table, String name, String brand, String color, String size, String price, int available) {
+	private void initialize(JTable table, String sku, String name, String brand, String color, String size, String price, int available) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 402);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //CLOSES THIS FORM
@@ -139,12 +139,6 @@ public class ProductInformation {
 		lblPrice.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
 		lblPrice.setBounds(10, 147, 101, 23);
 		bottomPanel.add(lblPrice);
-		
-		System.out.println("the given name was:...." + this.name);
-		System.out.println("the given brand was:...." + this.brand);
-		System.out.println("the given color was:...." + this.color);
-		System.out.println("the given size was:...." + this.size);
-		System.out.println("the given price was:...." + this.price);
 		
 		JLabel lblNameInfo = new JLabel(name);
 		lblNameInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
@@ -209,7 +203,7 @@ public class ProductInformation {
 						Notification.succesfulUpdate(getFrame());
 						
 						DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-						tableModel.addRow(new Object[]{getName(), getQuantity(), getPrice()});
+						tableModel.addRow(new Object[]{sku, getName(), getQuantity(), getPrice()});
 						
 						getFrame().dispose();
 						

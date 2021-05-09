@@ -126,6 +126,7 @@ public class Login extends DbConnector{
 		bottomPanel.add(txtUser);
 		txtUser.setColumns(10);
 		
+		
 		JButton btnEnter = new JButton("Sign In");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -181,6 +182,8 @@ public class Login extends DbConnector{
 		});
 		btnEnter.setBounds(166, 113, 89, 42);
 		bottomPanel.add(btnEnter);
+		
+		frame.getRootPane().setDefaultButton(btnEnter);
 		
 	}
 }

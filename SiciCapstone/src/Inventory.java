@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JTextField;
 
 public class Inventory extends DbConnector{
 
@@ -32,6 +33,15 @@ public class Inventory extends DbConnector{
 	
 	private JFrame frame;
 	private JTable table;
+	private JTextField txtNameInfo;
+	private JTextField txtBrandInfo;
+	private JTextField txtCategoryInfo;
+	private JTextField txtColorInfo;
+	private JTextField txtSizeInfo;
+	private JTextField txtPriceInfo;
+	private JTextField txtSkuInfo;
+	private JTextField txtAvailableInfo;
+	private JTextField txtRowStatusInfo;
 	
 	public JFrame getFrame() {
 		return frame;
@@ -117,88 +127,70 @@ public class Inventory extends DbConnector{
 		lblSize.setBounds(10, 147, 101, 23);
 		bottomPanel.add(lblSize);
 		
-		JLabel lblNameInfo = new JLabel("<dynamic>");
-		lblNameInfo.setOpaque(true);
-		lblNameInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblNameInfo.setBackground(new Color(245, 255, 250));
-		lblNameInfo.setBounds(121, 11, 142, 23);
-		bottomPanel.add(lblNameInfo);
-		
-		JLabel lblBrandInfo = new JLabel("<dynamic>");
-		lblBrandInfo.setOpaque(true);
-		lblBrandInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblBrandInfo.setBackground(new Color(245, 255, 250));
-		lblBrandInfo.setBounds(121, 45, 142, 23);
-		bottomPanel.add(lblBrandInfo);
-		
-		JLabel lblCategoryInfo = new JLabel("<dynamic>");
-		lblCategoryInfo.setOpaque(true);
-		lblCategoryInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblCategoryInfo.setBackground(new Color(245, 255, 250));
-		lblCategoryInfo.setBounds(121, 79, 142, 23);
-		bottomPanel.add(lblCategoryInfo);
-		
-		JLabel lblColorInfo = new JLabel("<dynamic>");
-		lblColorInfo.setOpaque(true);
-		lblColorInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblColorInfo.setBackground(new Color(245, 255, 250));
-		lblColorInfo.setBounds(121, 113, 142, 23);
-		bottomPanel.add(lblColorInfo);
-		
-		JLabel lblSizeInfo = new JLabel("<dynamic>");
-		lblSizeInfo.setOpaque(true);
-		lblSizeInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblSizeInfo.setBackground(new Color(245, 255, 250));
-		lblSizeInfo.setBounds(121, 147, 142, 23);
-		bottomPanel.add(lblSizeInfo);
-		
 		JLabel lblPrice = new JLabel("Price:");
 		lblPrice.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
 		lblPrice.setBounds(10, 181, 101, 23);
 		bottomPanel.add(lblPrice);
-		
-		JLabel lblPriceInfo = new JLabel("<dynamic>");
-		lblPriceInfo.setOpaque(true);
-		lblPriceInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblPriceInfo.setBackground(new Color(245, 255, 250));
-		lblPriceInfo.setBounds(121, 181, 142, 23);
-		bottomPanel.add(lblPriceInfo);
 		
 		JLabel lblSku = new JLabel("Sku:");
 		lblSku.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
 		lblSku.setBounds(10, 215, 101, 23);
 		bottomPanel.add(lblSku);
 		
-		JLabel lblSkuInfo = new JLabel("<dynamic>");
-		lblSkuInfo.setOpaque(true);
-		lblSkuInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblSkuInfo.setBackground(new Color(245, 255, 250));
-		lblSkuInfo.setBounds(121, 215, 142, 23);
-		bottomPanel.add(lblSkuInfo);
-		
 		JLabel lblAvailable = new JLabel("Available Amount:");
 		lblAvailable.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
 		lblAvailable.setBounds(10, 249, 101, 23);
 		bottomPanel.add(lblAvailable);
-		
-		JLabel lblAvailableInfo = new JLabel("<dynamic>");
-		lblAvailableInfo.setOpaque(true);
-		lblAvailableInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblAvailableInfo.setBackground(new Color(245, 255, 250));
-		lblAvailableInfo.setBounds(121, 249, 142, 23);
-		bottomPanel.add(lblAvailableInfo);
 		
 		JLabel lblRow = new JLabel("Row Status:");
 		lblRow.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
 		lblRow.setBounds(10, 283, 101, 23);
 		bottomPanel.add(lblRow);
 		
-		JLabel lblRowInfo = new JLabel("<dynamic>");
-		lblRowInfo.setOpaque(true);
-		lblRowInfo.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
-		lblRowInfo.setBackground(new Color(245, 255, 250));
-		lblRowInfo.setBounds(121, 283, 142, 23);
-		bottomPanel.add(lblRowInfo);
+		txtNameInfo = new JTextField();
+		txtNameInfo.setBounds(121, 16, 151, 19);
+		bottomPanel.add(txtNameInfo);
+		txtNameInfo.setColumns(10);
+		
+		txtBrandInfo = new JTextField();
+		txtBrandInfo.setColumns(10);
+		txtBrandInfo.setBounds(121, 50, 151, 19);
+		bottomPanel.add(txtBrandInfo);
+		
+		txtCategoryInfo = new JTextField();
+		txtCategoryInfo.setColumns(10);
+		txtCategoryInfo.setBounds(121, 84, 151, 19);
+		bottomPanel.add(txtCategoryInfo);
+		
+		txtColorInfo = new JTextField();
+		txtColorInfo.setColumns(10);
+		txtColorInfo.setBounds(121, 118, 151, 19);
+		bottomPanel.add(txtColorInfo);
+		
+		txtSizeInfo = new JTextField();
+		txtSizeInfo.setColumns(10);
+		txtSizeInfo.setBounds(121, 152, 151, 19);
+		bottomPanel.add(txtSizeInfo);
+		
+		txtPriceInfo = new JTextField();
+		txtPriceInfo.setColumns(10);
+		txtPriceInfo.setBounds(121, 186, 151, 19);
+		bottomPanel.add(txtPriceInfo);
+		
+		txtSkuInfo = new JTextField();
+		txtSkuInfo.setColumns(10);
+		txtSkuInfo.setBounds(121, 220, 151, 19);
+		bottomPanel.add(txtSkuInfo);
+		
+		txtAvailableInfo = new JTextField();
+		txtAvailableInfo.setColumns(10);
+		txtAvailableInfo.setBounds(121, 254, 151, 19);
+		bottomPanel.add(txtAvailableInfo);
+		
+		txtRowStatusInfo = new JTextField();
+		txtRowStatusInfo.setColumns(10);
+		txtRowStatusInfo.setBounds(121, 288, 151, 19);
+		bottomPanel.add(txtRowStatusInfo);
 		
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
@@ -221,6 +213,61 @@ public class Inventory extends DbConnector{
 		Image imgBack = picBack.getScaledInstance(btnBack.getWidth(), btnBack.getHeight(), Image.SCALE_SMOOTH);
 		btnBack.setIcon(new ImageIcon (imgBack));
 		
+		///..........................................................................................................
+		JButton btnAdd = new JButton("Add to Inventory");
+		btnAdd.setBounds(701, 414, 137, 21);
+		frame.getContentPane().add(btnAdd);
+		
+	
+		
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+				String name = txtNameInfo.getText(); 
+				String brand = txtBrandInfo.getText();
+				String category = txtCategoryInfo.getText();
+				String color = txtColorInfo.getText();
+				String size = txtSizeInfo.getText();
+				String price = txtPriceInfo.getText();
+				String sku = txtSkuInfo.getText();
+				String available = txtAvailableInfo.getText();
+				String row = txtRowStatusInfo.getText();
+				
+				String query = "BEGIN;\r\n" + 
+						"INSERT INTO inventory_tb (inventory_name, brand, inventory_category, color, inventory_size, list_price, sku, available_amount, row_status)\r\n" + 
+						"VALUES ('"+name+"', '"+brand+"', '"+category+ "' , '" +color+"', '"+size+"','"+price+"','"+sku+"','"+available+"','"+row+"');\r\n" +  
+						"END;"; 
+					
+				try {
+
+					Statement s = getConnection().createStatement();
+					s.executeUpdate(query);
+					Notification.succesfulUpdate(frame);
+				
+				}catch (SQLException er) {
+					er.printStackTrace();
+				}
+			}
+		});
+		
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.setBounds(473, 35, 85, 21);
+		frame.getContentPane().add(btnRefresh);
+		
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new Inventory().getFrame().setVisible(true);
+				getFrame().dispose();
+			}
+		});
+		
+		JButton btnEdit = new JButton("Edit Selected");
+		btnEdit.setBounds(846, 413, 137, 21);
+		frame.getContentPane().add(btnEdit);
+		
+		///.....................................................................................................
 		String query = "SELECT * FROM public.inventory_tb";
 		
 		try {
