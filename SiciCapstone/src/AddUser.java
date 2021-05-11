@@ -151,7 +151,6 @@ public class AddUser extends DbConnector{
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Notification.succesfulUpdate(getFrame());
 				new Hub(true).getFrame().setVisible(true); //Already manager if you are at this window
 				getFrame().dispose();
 				

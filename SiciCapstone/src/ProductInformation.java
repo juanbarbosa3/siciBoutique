@@ -24,7 +24,7 @@ public class ProductInformation {
 	private String color;
 	private String size;
 	private String price;
-	
+		
 	private int quantity;
 	
 	public JFrame getFrame() {
@@ -73,14 +73,14 @@ public class ProductInformation {
 	/**
 	 * Create the application.
 	 */
-	public ProductInformation(JTable table, String sku, String name, String brand, String color, String size, String price, int available) {
-		initialize(table, sku, name, brand, color, size, price, available);
+	public ProductInformation(JTable table, JLabel lblSubResult, JLabel lblTaxResult, JLabel lblTotalResult, String sku, String name, String brand, String color, String size, String price, int available) {
+		initialize(table, lblSubResult, lblTaxResult, lblTotalResult, sku, name, brand, color, size, price, available);
 	}
 	
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(JTable table, String sku, String name, String brand, String color, String size, String price, int available) {
+	private void initialize(JTable table, JLabel lblSubResult, JLabel lblTaxResult, JLabel lblTotalResult, String sku, String name, String brand, String color, String size, String price, int available) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 402);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //CLOSES THIS FORM
@@ -205,6 +205,29 @@ public class ProductInformation {
 						DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 						tableModel.addRow(new Object[]{sku, getName(), getQuantity(), getPrice()});
 						
+						double sub, tax;
+						
+						if(lblSubResult.getText().equals("")) {
+							
+							sub = getQuantity() * Double.parseDouble(getPrice().substring(1));
+							tax = sub * CashRegister.getTax();
+							
+							lblSubResult.setText(String.valueOf(sub));
+							lblTaxResult.setText(String.valueOf(tax));
+							lblTotalResult.setText(String.valueOf(sub + tax));
+							
+						} else {
+							
+							sub = Double.parseDouble(lblSubResult.getText()) + 
+									(getQuantity() * Double.parseDouble(getPrice().trim().substring(1)));
+							tax = sub * CashRegister.getTax();
+							
+							lblSubResult.setText(String.valueOf(sub));
+							lblTaxResult.setText(String.valueOf(tax));
+							lblTotalResult.setText(String.valueOf(sub + tax));
+							
+						}
+						
 						getFrame().dispose();
 						
 					} else {//number > available
@@ -230,6 +253,8 @@ public class ProductInformation {
 		inputPanel.add(txtInput);
 		txtInput.setColumns(10);
 		
+		frame.getRootPane().setDefaultButton(btnUpdate);
+
 		
 	}
 }

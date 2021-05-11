@@ -245,6 +245,12 @@ public class Inventory extends DbConnector{
 					Statement s = getConnection().createStatement();
 					s.executeUpdate(query);
 					Notification.succesfulUpdate(frame);
+					
+					/*
+					 * Added code that refreshes table with newly added product
+					 */
+					DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+					tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available});
 				
 				}catch (SQLException er) {
 					er.printStackTrace();
@@ -252,14 +258,48 @@ public class Inventory extends DbConnector{
 			}
 		});
 		
+		///.....................................................................................................
+		
+		/*
+		 * Deleted all logic of this button
+		 * Updated it w/ better logic
+		 * JGBT
+		 */
+		
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setBounds(473, 35, 85, 21);
 		frame.getContentPane().add(btnRefresh);
 		
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Inventory().getFrame().setVisible(true);
-				getFrame().dispose();
+				String query = "SELECT * FROM public.inventory_tb";
+				
+				DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+				tableModel.setRowCount(0);
+				
+				try {
+					Statement s = getConnection().createStatement();
+					ResultSet r = s.executeQuery(query);
+					
+					while(r.next()) {
+						String name = r.getString("inventory_name");
+						String brand = r.getString("brand");
+						String category = r.getString("inventory_category");
+						String color = r.getString("color");
+						String size = r.getString("inventory_size");
+						String price = r.getString("list_price");
+						String sku = r.getString("sku");
+						String available = r.getString("available_amount");			
+
+					
+						//DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+						tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available});
+					}
+					
+				
+				}catch (SQLException ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
 		

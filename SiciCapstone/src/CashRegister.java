@@ -38,6 +38,12 @@ public class CashRegister extends DbConnector {
 	private JTable table;
 	private JTextField txtInput;
 	
+	private static double tax = 0.115;
+	
+	public static double getTax() {
+		return tax;
+	}
+
 	private boolean ready;
 	
 	public JTable getTable() {
@@ -71,6 +77,8 @@ public class CashRegister extends DbConnector {
 	private void initialize(boolean access) {
 		
 		super.setUpDB(); //Necessary call
+		
+		
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
@@ -131,6 +139,12 @@ public class CashRegister extends DbConnector {
 		
 		ready = true;
 		
+		JLabel lblSubResult = new JLabel();
+		JLabel lblTaxResult = new JLabel();
+		JLabel lblTotalResult = new JLabel();
+
+
+		
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sku = txtInput.getText();
@@ -157,7 +171,7 @@ public class CashRegister extends DbConnector {
 						String price = r.getString("list_price");
 						int available = r.getInt("available_amount");
 						
-						ProductInformation pi = new ProductInformation(table, sku, name, brand, color, size, price, available);
+						ProductInformation pi = new ProductInformation(table, lblSubResult, lblTaxResult, lblTotalResult, sku, name, brand, color, size, price, available);
 						pi.getFrame().setVisible(true);
 						
 						} else {
@@ -193,13 +207,25 @@ public class CashRegister extends DbConnector {
 			public void actionPerformed(ActionEvent e) {
 				if(table.getSelectedRow() != -1) {
 					DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+					
+					double sub;
+					double subOfSelectedRow;				
+					
+					subOfSelectedRow = Double.parseDouble((String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 2)))) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1));
+					
+					sub = Double.parseDouble(lblSubResult.getText());
+					tax = Double.parseDouble(lblTaxResult.getText());
+					
 					tableModel.removeRow(table.getSelectedRow());
-					//table.remove(table.getSelectedRow());
+					
+					lblSubResult.setText(String.valueOf(sub - subOfSelectedRow));
+					lblTaxResult.setText(String.valueOf((sub - subOfSelectedRow) * CashRegister.getTax()));
+					lblTotalResult.setText(String.valueOf(sub - subOfSelectedRow + (sub - subOfSelectedRow) * CashRegister.getTax()));
 				}
 				
 			}
 		});
-		btnEliminate.setBounds(60, 116, 133, 64);
+		btnEliminate.setBounds(60, 59, 133, 64);
 		inputPanel.add(btnEliminate);
 		
 		JButton btnQuantity = new JButton("Cambiar cantidad");
@@ -219,7 +245,7 @@ public class CashRegister extends DbConnector {
 		                    null,
 		                    "");
 					
-					if(quantity != null && quantity.matches("-?\\d+")) {
+					if(quantity != null && quantity.matches("-?\\d+") && !quantity.equals("0")) {
 					
 						String query = "select available_amount\r\n" + 
 								"from public.inventory_tb\r\n" + 
@@ -235,9 +261,24 @@ public class CashRegister extends DbConnector {
 							int available = r.getInt("available_amount");
 							
 							if(Integer.parseInt(quantity) <= available) {
-						
-								tableModel.insertRow(table.getSelectedRow(), new Object[]{tableModel.getValueAt(table.getSelectedRow(), 0), tableModel.getValueAt(table.getSelectedRow(), 1), quantity, tableModel.getValueAt(table.getSelectedRow(), 3)});
-								tableModel.removeRow(table.getSelectedRow()+1);
+								
+
+									double sub;
+									double subOfSelectedRow;				
+									
+									subOfSelectedRow = Double.parseDouble((String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 2)))) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1));
+
+									
+									sub = Double.parseDouble(lblSubResult.getText());
+									tax = Double.parseDouble(lblTaxResult.getText());
+									
+									tableModel.insertRow(table.getSelectedRow(), new Object[]{tableModel.getValueAt(table.getSelectedRow(), 0), tableModel.getValueAt(table.getSelectedRow(), 1), quantity, tableModel.getValueAt(table.getSelectedRow(), 3)});
+									tableModel.removeRow(table.getSelectedRow()+1);
+									
+									lblSubResult.setText(String.valueOf(sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))));
+									lblTaxResult.setText(String.valueOf((sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))) * CashRegister.getTax()));
+									lblTotalResult.setText(String.valueOf(sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1))) + (sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))) * CashRegister.getTax()));
+
 							} else {
 								Notification.failedQuantity(getFrame());
 							}
@@ -251,8 +292,55 @@ public class CashRegister extends DbConnector {
 				}
 			}
 		});
-		btnQuantity.setBounds(60, 226, 133, 64);
+		btnQuantity.setBounds(60, 141, 133, 64);
 		inputPanel.add(btnQuantity);
+		
+		JButton btnPay = new JButton("Pay");
+		btnPay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
+		btnPay.setBounds(60, 216, 133, 64);
+		inputPanel.add(btnPay);
+		
+		JLabel lblSub = new JLabel("Sub-Total:");
+		lblSub.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblSub.setBounds(10, 291, 101, 23);
+		inputPanel.add(lblSub);
+		
+//		JLabel lblSubResult = new JLabel();
+		lblSubResult.setOpaque(true);
+		lblSubResult.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblSubResult.setBackground(new Color(245, 255, 250));
+		lblSubResult.setBounds(121, 291, 132, 23);
+		inputPanel.add(lblSubResult);
+		
+		JLabel lblTax = new JLabel("Tax:");
+		lblTax.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblTax.setBounds(10, 325, 101, 23);
+		inputPanel.add(lblTax);
+		
+//		JLabel lblTaxResult = new JLabel();
+		lblTaxResult.setOpaque(true);
+		lblTaxResult.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblTaxResult.setBackground(new Color(245, 255, 250));
+		lblTaxResult.setBounds(121, 325, 132, 23);
+		inputPanel.add(lblTaxResult);
+		
+		JLabel lblTotal = new JLabel("Total:");
+		lblTotal.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblTotal.setBounds(10, 359, 101, 23);
+		inputPanel.add(lblTotal);
+		
+//		JLabel lblTotalResult = new JLabel();
+		lblTotalResult.setOpaque(true);
+		lblTotalResult.setFont(new Font("Eras Medium ITC", Font.PLAIN, 20));
+		lblTotalResult.setBackground(new Color(245, 255, 250));
+		lblTotalResult.setBounds(121, 359, 132, 23);
+		inputPanel.add(lblTotalResult);
 		
 		
 		
