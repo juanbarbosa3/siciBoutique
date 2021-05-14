@@ -23,6 +23,8 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Inventory extends DbConnector{
 
@@ -42,6 +44,7 @@ public class Inventory extends DbConnector{
 	private JTextField txtSkuInfo;
 	private JTextField txtAvailableInfo;
 	private JTextField txtRowStatusInfo;
+	private JTextField txtIdInfo;
 	
 	public JFrame getFrame() {
 		return frame;
@@ -50,14 +53,14 @@ public class Inventory extends DbConnector{
 	/**
 	 * Create the application.
 	 */
-	public Inventory() {
-		initialize();
+	public Inventory(int staffID) {
+		initialize(staffID);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(int staffID) {
 		
 		super.setUpDB(); //Necessary call
 		
@@ -81,11 +84,31 @@ public class Inventory extends DbConnector{
 		
 		
 		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			
+			
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+						DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+						int SelectedRows = table.getSelectedRow();
+						
+						txtNameInfo.setText(tableModel.getValueAt(SelectedRows, 0).toString());
+						txtBrandInfo.setText(tableModel.getValueAt(SelectedRows, 1).toString());
+						txtCategoryInfo.setText(tableModel.getValueAt(SelectedRows, 2).toString());
+						txtColorInfo.setText(tableModel.getValueAt(SelectedRows, 3).toString());
+						txtSizeInfo.setText(tableModel.getValueAt(SelectedRows, 4).toString());
+						txtPriceInfo.setText(tableModel.getValueAt(SelectedRows, 5).toString());
+						txtSkuInfo.setText(tableModel.getValueAt(SelectedRows, 6).toString());
+						txtAvailableInfo.setText(tableModel.getValueAt(SelectedRows, 7).toString());
+						txtIdInfo.setText(tableModel.getValueAt(SelectedRows, 8).toString());	
+					}
+				
+				});
+		
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"Name", "Brand", "Category", "Color", "Size", "Price", "Sku", "Available",
+				"Name", "Brand", "Category", "Color", "Size", "Price", "Sku", "Available","ID",
 			}
 		));
 		table.setBackground(Color.WHITE);
@@ -195,7 +218,7 @@ public class Inventory extends DbConnector{
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Hub(true).getFrame().setVisible(true); //Already manager if you are at this window
+				new Hub(true, staffID).getFrame().setVisible(true); //Already manager if you are at this window
 				getFrame().dispose();
 				
 			}
@@ -245,12 +268,6 @@ public class Inventory extends DbConnector{
 					Statement s = getConnection().createStatement();
 					s.executeUpdate(query);
 					Notification.succesfulUpdate(frame);
-					
-					/*
-					 * Added code that refreshes table with newly added product
-					 */
-					DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-					tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available});
 				
 				}catch (SQLException er) {
 					er.printStackTrace();
@@ -259,12 +276,7 @@ public class Inventory extends DbConnector{
 		});
 		
 		///.....................................................................................................
-		
-		/*
-		 * Deleted all logic of this button
-		 * Updated it w/ better logic
-		 * JGBT
-		 */
+
 		
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setBounds(473, 35, 85, 21);
@@ -272,6 +284,18 @@ public class Inventory extends DbConnector{
 		
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				txtNameInfo.setText("");
+				txtBrandInfo.setText("");
+				txtCategoryInfo.setText("");
+				txtColorInfo.setText("");
+				txtSizeInfo.setText("");
+				txtPriceInfo.setText("");
+				txtSkuInfo.setText("");
+				txtAvailableInfo.setText("");
+				txtIdInfo.setText("");
+				txtRowStatusInfo.setText("");
+				
 				String query = "SELECT * FROM public.inventory_tb";
 				
 				DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
@@ -289,17 +313,18 @@ public class Inventory extends DbConnector{
 						String size = r.getString("inventory_size");
 						String price = r.getString("list_price");
 						String sku = r.getString("sku");
-						String available = r.getString("available_amount");			
+						String available = r.getString("available_amount");	
+						String id = r.getString("inventory_id");
 
 					
 						//DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-						tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available});
+						tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available, id});
 					}
 					
 				
 				}catch (SQLException ex) {
 					ex.printStackTrace();
-				}
+				}	
 			}
 		});
 		
@@ -307,6 +332,46 @@ public class Inventory extends DbConnector{
 		btnEdit.setBounds(846, 413, 137, 21);
 		frame.getContentPane().add(btnEdit);
 		
+		txtIdInfo = new JTextField();
+		txtIdInfo.setEditable(false);
+		txtIdInfo.setBounds(846, 51, 96, 19);
+		frame.getContentPane().add(txtIdInfo);
+		txtIdInfo.setColumns(10);
+		
+		JLabel lblId = new JLabel("Id:");
+		lblId.setFont(new Font("Eras Medium ITC", Font.BOLD, 20));
+		lblId.setBounds(794, 47, 44, 23);
+		frame.getContentPane().add(lblId);
+		
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String id = txtIdInfo.getText();
+				String name = txtNameInfo.getText(); 
+				String brand = txtBrandInfo.getText();
+				String category = txtCategoryInfo.getText();
+				String color = txtColorInfo.getText();
+				String size = txtSizeInfo.getText();
+				String price = txtPriceInfo.getText();
+				String sku = txtSkuInfo.getText();
+				String available = txtAvailableInfo.getText();
+				//String row = txtRowStatusInfo.getText();
+				
+				String query = "UPDATE public.inventory_tb \r\n"
+						+ "SET inventory_name= '"+name+"', brand= '"+brand+"', inventory_category='"+category+ "', color='" +color+"', inventory_size='"+size+"', list_price='"+price+"', sku='"+sku+"', available_amount='"+available+"'\r\n" 
+								+"WHERE inventory_id = '"+id+"';";
+						
+				try {
+
+					Statement s = getConnection().createStatement();
+					s.executeUpdate(query);
+					Notification.succesfulUpdate(frame);
+				
+				}catch (SQLException er) {
+					er.printStackTrace();
+				}
+			}
+		});
 		///.....................................................................................................
 		String query = "SELECT * FROM public.inventory_tb";
 		
@@ -315,6 +380,8 @@ public class Inventory extends DbConnector{
 			ResultSet r = s.executeQuery(query);
 			
 			while(r.next()) {
+				
+				
 				String name = r.getString("inventory_name");
 				String brand = r.getString("brand");
 				String category = r.getString("inventory_category");
@@ -323,10 +390,10 @@ public class Inventory extends DbConnector{
 				String price = r.getString("list_price");
 				String sku = r.getString("sku");
 				String available = r.getString("available_amount");			
-
+				String id = r.getString("inventory_id");
 			
 				DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-				tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available});
+				tableModel.addRow(new String[]{name, brand, category, color, size, price, sku, available,id});
 			}
 			
 		

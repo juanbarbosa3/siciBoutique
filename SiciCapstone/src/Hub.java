@@ -32,14 +32,14 @@ public class Hub {
 	/**
 	 * Create the application.
 	 */
-	public Hub(boolean access) {
-		initialize(access);
+	public Hub(boolean access, int staffID) {
+		initialize(access, staffID);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(boolean access) {
+	private void initialize(boolean access, int staffID) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 345, 380);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,7 +93,7 @@ public class Hub {
 		JButton btnCash = new JButton("CashRegister");
 		btnCash.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CashRegister cr = new CashRegister(access); //Necessary access pass
+				CashRegister cr = new CashRegister(access, staffID); //Necessary access pass
 				cr.getFrame().setVisible(true);
 				getFrame().dispose();
 			}
@@ -105,7 +105,7 @@ public class Hub {
 		JButton btnUsers = new JButton("AddUsers");
 		btnUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddUser au = new AddUser();
+				AddUser au = new AddUser(staffID);
 				au.getFrame().setVisible(true);
 				getFrame().dispose();
 			}
@@ -117,7 +117,7 @@ public class Hub {
 		JButton btnInventory = new JButton("Inventory");
 		btnInventory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Inventory().getFrame().setVisible(true);
+				new Inventory(staffID).getFrame().setVisible(true);
 				getFrame().dispose();
 			}
 		});

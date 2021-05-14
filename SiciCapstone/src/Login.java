@@ -152,15 +152,16 @@ public class Login extends DbConnector{
 						if(r.next()) { //Block of code that take cares of the user's access
 							
 							String role = r.getString("staff_role");
+							int staffID = r.getInt("staff_id");
 							
 							switch(role) {
 							case "Manager":
-								new Hub(true).getFrame().setVisible(true);
+								new Hub(true, staffID).getFrame().setVisible(true);
 								getConnection().close();
 								getFrame().dispose();
 								break;
 							case "Cashier":
-								new Hub(false).getFrame().setVisible(true);
+								new Hub(false, staffID).getFrame().setVisible(true);
 								getConnection().close();
 								getFrame().dispose();
 								break;

@@ -46,6 +46,13 @@ public final class Notification {
 			    JOptionPane.ERROR_MESSAGE);
     }
     
+    public static void invalidInput(JFrame frame) {
+		JOptionPane.showMessageDialog(frame,
+			    "Invalid input!!!",
+			    "Error 404",
+			    JOptionPane.ERROR_MESSAGE);
+    }
+    
     public static void succesfulUpdate(JFrame frame) {
 		JOptionPane.showMessageDialog(frame,
 			    "Succesful update!!!");

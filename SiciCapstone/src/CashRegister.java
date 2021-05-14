@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -67,18 +68,18 @@ public class CashRegister extends DbConnector {
 	/**
 	 * Create the application.
 	 */
-	public CashRegister(boolean access) {
-		initialize(access);
+	public CashRegister(boolean access, int staffID) {
+		initialize(access, staffID);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(boolean access) {
+	private void initialize(boolean access, int staffID) {
 		
 		super.setUpDB(); //Necessary call
 		
-		
+		System.out.println(LocalDate.now());
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
@@ -209,17 +210,20 @@ public class CashRegister extends DbConnector {
 					DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 					
 					double sub;
-					double subOfSelectedRow;				
+					double subOfSelectedRow;		
+					
 					
 					subOfSelectedRow = Double.parseDouble((String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 2)))) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1));
+					subOfSelectedRow = (double) Math.round(subOfSelectedRow * 100) / 100;
 					
 					sub = Double.parseDouble(lblSubResult.getText());
-					tax = Double.parseDouble(lblTaxResult.getText());
+					sub = (double) Math.round(sub * 100) / 100;
+					//tax = Double.parseDouble(lblTaxResult.getText());
 					
 					tableModel.removeRow(table.getSelectedRow());
 					
 					lblSubResult.setText(String.valueOf(sub - subOfSelectedRow));
-					lblTaxResult.setText(String.valueOf((sub - subOfSelectedRow) * CashRegister.getTax()));
+					lblTaxResult.setText(String.valueOf((double) Math.round((sub - subOfSelectedRow) * CashRegister.getTax()* 100) / 100));
 					lblTotalResult.setText(String.valueOf(sub - subOfSelectedRow + (sub - subOfSelectedRow) * CashRegister.getTax()));
 				}
 				
@@ -267,18 +271,19 @@ public class CashRegister extends DbConnector {
 									double subOfSelectedRow;				
 									
 									subOfSelectedRow = Double.parseDouble((String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 2)))) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1));
-
+									subOfSelectedRow = (double) Math.round(subOfSelectedRow * 100) / 100;
 									
 									sub = Double.parseDouble(lblSubResult.getText());
-									tax = Double.parseDouble(lblTaxResult.getText());
+									sub = (double) Math.round(sub * 100) / 100;
+									//tax = Double.parseDouble(lblTaxResult.getText());
 									
 									tableModel.insertRow(table.getSelectedRow(), new Object[]{tableModel.getValueAt(table.getSelectedRow(), 0), tableModel.getValueAt(table.getSelectedRow(), 1), quantity, tableModel.getValueAt(table.getSelectedRow(), 3)});
 									tableModel.removeRow(table.getSelectedRow()+1);
 									
 									lblSubResult.setText(String.valueOf(sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))));
-									lblTaxResult.setText(String.valueOf((sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))) * CashRegister.getTax()));
+									lblTaxResult.setText(String.valueOf((double) Math.round((sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))) * CashRegister.getTax()* 100) / 100));
 									lblTotalResult.setText(String.valueOf(sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1))) + (sub - subOfSelectedRow + (Double.parseDouble(quantity) * Double.parseDouble(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 3)).substring(1)))) * CashRegister.getTax()));
-
+									
 							} else {
 								Notification.failedQuantity(getFrame());
 							}
@@ -299,8 +304,139 @@ public class CashRegister extends DbConnector {
 		btnPay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 				
-				
+				if(table.getRowCount() != 0) { //If table is not empty
+					
+					//Searches for the most recently created cart
+					String query4CartID = "select cart_id\r\n" + 
+							"from public.cart_tb\r\n" + 
+							"order by cart_id desc\r\n" + 
+							"limit 1\r\n" + 
+							";";
+					
+					
+					//Uses sku to search for first item's inventory ID
+					String queryInventoryID = "select inventory_id\r\n" + 
+							"from public.inventory_tb\r\n" + 
+							"where (\r\n" + 
+							"	sku = '" + tableModel.getValueAt(0, 0) + "'\r\n" + 
+							"	  );";
+					
+						
+					try { //Creates new cart with first item
+
+						Statement s = getConnection().createStatement();
+						ResultSet r = s.executeQuery(queryInventoryID);
+						r.next();
+						
+						int inventoryID = r.getInt("inventory_id");
+						int amount = Integer.parseInt((String.valueOf(tableModel.getValueAt(0, 2))));
+						
+						r = s.executeQuery(query4CartID);
+						
+						int cartID;
+						if(r.next()) { //Searches for the most recently created cart
+							cartID = r.getInt("cart_id") + 1; //If it exists, adds 1
+						} else {
+							cartID = 1; //Else, first cart created
+						}
+						///////////////////////////////////////////////////////////////////////////
+						String availableInvID = "select available_amount\r\n" + 
+								"from public.inventory_tb\r\n" + 
+								"where (\r\n" + 
+								"	inventory_id = '" + inventoryID + "'\r\n" + 
+								"	  );";
+						
+						r = s.executeQuery(availableInvID);
+						r.next();
+						
+						int availableAmount = r.getInt("available_amount");
+						
+						int resultOfSale = availableAmount - amount;
+						
+						String queryMinusAmount = "UPDATE public.inventory_tb \r\n"
+								+ "SET available_amount='"+resultOfSale+"'\r\n" 
+										+"WHERE inventory_id = '"+inventoryID+"';";
+						
+						s.executeUpdate(queryMinusAmount);
+						//////////////////////////////////////////////////////////////////////////
+						String queryFillCart = "BEGIN;\r\n" + 
+								"INSERT INTO cart_tb (cart_id, inventory_id, desired_amount, row_status)\r\n" + 
+								"VALUES ('"+cartID+"', '"+inventoryID+"', '"+amount+"', 1);\r\n" +  
+								"END;"; 
+						
+						s.executeUpdate(queryFillCart);
+						
+						if(table.getRowCount() > 1) { //If table consist of multiple items, adds it to same cart 
+							
+							//Searches for the most recently created cart, (cart created above)
+							
+							for (int i = 1; i < table.getRowCount(); i++) { //Adds the rest of the items from the cart
+
+								queryInventoryID = "select inventory_id\r\n" + 
+									"from public.inventory_tb\r\n" + 
+									"where (\r\n" + 
+									"	sku = '" + tableModel.getValueAt(i, 0) + "'\r\n" + 
+									"	  );";
+								
+								r = s.executeQuery(queryInventoryID);
+								r.next();
+								
+								inventoryID = r.getInt("inventory_id");
+								amount = Integer.parseInt((String.valueOf(tableModel.getValueAt(i, 2))));
+								
+								////////////////////////////////////////////////////////////////////////////
+								availableInvID = "select available_amount\r\n" + 
+										"from public.inventory_tb\r\n" + 
+										"where (\r\n" + 
+										"	inventory_id = '" + inventoryID + "'\r\n" + 
+										"	  );";
+								r = s.executeQuery(availableInvID);
+								r.next();
+								
+								availableAmount = r.getInt("available_amount");
+								
+								resultOfSale = availableAmount - amount;
+								
+								queryMinusAmount =  "UPDATE public.inventory_tb \r\n"
+								+ "SET available_amount='"+resultOfSale+"'\r\n" 
+										+"WHERE inventory_id = '"+inventoryID+"';";
+						
+								s.executeUpdate(queryMinusAmount);
+								///////////////////////////////////////////////////////////////////////////
+								
+								String query2KeepFillingCart = "BEGIN;\r\n" + 
+										"INSERT INTO cart_tb (cart_id, inventory_id, desired_amount, row_status)\r\n" + 
+										"VALUES ('"+cartID+"', '"+inventoryID+"', '"+amount+"', 1);\r\n" +  
+										"END;"; 
+								
+								s.executeUpdate(query2KeepFillingCart);
+								
+							}	
+						}
+						
+						double total = Double.parseDouble(lblTotalResult.getText());
+						total = (double) Math.round(total * 100) / 100;
+						
+						
+						String cart2Sale = "BEGIN;\r\n" + 
+								"INSERT INTO sale_tb (cart_id, staff_id, sale_type, sale_date, total_to_pay, total_paid, discount, row_status)\r\n" + 
+								"VALUES ('"+cartID+"', '"+staffID+"', 'Normal', '"+LocalDate.now()+"', '"+total+"', '"+total+"', 0, 1);\r\n" +  
+								"END;"; 
+						
+						s.executeUpdate(cart2Sale);
+						
+						Notification.succesfulUpdate(getFrame());
+						tableModel.setRowCount(0);
+					
+					}catch (SQLException er) {
+						er.printStackTrace();
+					
+					}
+								
+				}
+	
 			}
 		});
 		btnPay.setBounds(60, 216, 133, 64);
@@ -348,7 +484,7 @@ public class CashRegister extends DbConnector {
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Hub(access).getFrame().setVisible(true);
+				new Hub(access, staffID).getFrame().setVisible(true);
 				getFrame().dispose();
 				
 			}

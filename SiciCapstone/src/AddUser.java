@@ -43,14 +43,14 @@ public class AddUser extends DbConnector{
 	/**
 	 * Create the application.
 	 */
-	public AddUser() {
-		initialize();
+	public AddUser(int staffID) {
+		initialize(staffID);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(int staffID) {
 		
 		super.setUpDB(); //Necessary call
 		
@@ -151,7 +151,7 @@ public class AddUser extends DbConnector{
 		JButton btnBack = new JButton("");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Hub(true).getFrame().setVisible(true); //Already manager if you are at this window
+				new Hub(true, staffID).getFrame().setVisible(true); //Already manager if you are at this window
 				getFrame().dispose();
 				
 			}
@@ -172,33 +172,39 @@ public class AddUser extends DbConnector{
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				String role;
 				
-				if(rdbManager.isSelected()) {
-					role = "Manager";
+				if(txtName.getText().equals("") || txtLastName.getText().equals("") || txtPassword.getText().equals("") || txtPhone.getText().equals("")) {
+					Notification.invalidInput(getFrame());
 				} else {
-					role = "Cashier";
-				}
 				
-				String password = txtPassword.getText(); 
-				String name = txtName.getText();
-				String lastName = txtLastName.getText();
-				String phone = txtPhone.getText();
-				
-				String query = "BEGIN;\r\n" + 
-						"INSERT INTO staff_tb (staff_role, staff_password, staff_name, staff_phone, row_status)\r\n" + 
-						"VALUES ('"+role+"', '"+password+"', '"+name+ " " +lastName+"', '"+phone+"', 1);\r\n" +  
-						"END;"; 
+					String role;
 					
-				try {
-
-					Statement s = getConnection().createStatement();
-					s.executeUpdate(query);
-					Notification.succesfulUpdate(frame);
-				
-				}catch (SQLException er) {
-					er.printStackTrace();
-				
+					if(rdbManager.isSelected()) {
+						role = "Manager";
+					} else {
+						role = "Cashier";
+					}
+					
+					String password = txtPassword.getText(); 
+					String name = txtName.getText();
+					String lastName = txtLastName.getText();
+					String phone = txtPhone.getText();
+					
+					String query = "BEGIN;\r\n" + 
+							"INSERT INTO staff_tb (staff_role, staff_password, staff_name, staff_phone, row_status)\r\n" + 
+							"VALUES ('"+role+"', '"+password+"', '"+name+ " " +lastName+"', '"+phone+"', 1);\r\n" +  
+							"END;"; 
+						
+					try {
+	
+						Statement s = getConnection().createStatement();
+						s.executeUpdate(query);
+						Notification.succesfulUpdate(frame);
+					
+					}catch (SQLException er) {
+						er.printStackTrace();
+					
+					}
 				}
 			}
 		});

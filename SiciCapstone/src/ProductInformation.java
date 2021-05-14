@@ -220,7 +220,11 @@ public class ProductInformation {
 							
 							sub = Double.parseDouble(lblSubResult.getText()) + 
 									(getQuantity() * Double.parseDouble(getPrice().trim().substring(1)));
-							tax = sub * CashRegister.getTax();
+							sub = (double) Math.round(sub * 100) / 100;
+							
+							tax = (double) Math.round( sub * CashRegister.getTax()* 100) / 100;
+
+							
 							
 							lblSubResult.setText(String.valueOf(sub));
 							lblTaxResult.setText(String.valueOf(tax));
